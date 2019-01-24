@@ -1,0 +1,22 @@
+.wrap {
+  width: 60rem;
+  margin: 0 auto;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.border-0 {
+  border: 0;
+}
+.border-l-0 {
+  border-left: 0;
+}
+.border-r-0 {
+  border-right: 0;
+}
+.border-t-0 {
+  border-top: 0;
+}
+.border-b-0 {
+  border-bottom: 0;
+}
