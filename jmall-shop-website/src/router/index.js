@@ -19,7 +19,6 @@ export default new Router({
             children: [
                 {
                     path: '/admin',
-                    name: 'admin',
                     meta: {title: '首页'},
                     components: {
                         admin: () => import('@/admin/default/default.vue')

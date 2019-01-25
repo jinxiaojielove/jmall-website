@@ -19,6 +19,15 @@ import * as alls from './api/index';
 //  枚举类
 import * as enums from './util/enumClass';
 
+// 引入样式
+import 'vue-easytable/libs/themes-base/index.css'
+// 导入 table 和 分页组件
+import {VTable,VPagination} from 'vue-easytable'
+
+// 注册到全局
+Vue.component(VTable.name, VTable)
+Vue.component(VPagination.name, VPagination)
+
 
 //  todo 之后考虑下是否引入白名单的概念
 

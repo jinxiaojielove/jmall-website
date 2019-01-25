@@ -22,6 +22,13 @@ service.interceptors.request.use(config => {
 //  拦截出参
 
 service.interceptors.response.use(res => {
+    if(!res.data.success){
+        Message({
+            type: 'error',
+            duration: 5 * 1000,
+            message: res.data.message
+        });
+    }
     return res.data;
 }, error => {
     Message({

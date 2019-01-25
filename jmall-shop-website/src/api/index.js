@@ -1,4 +1,4 @@
-import * as admin from './admin';
+import * as product from './product';
 import * as login from './login';
 
-export {admin, login};
+export {product, login};

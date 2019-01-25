@@ -60,5 +60,4 @@
                 margin 4rem 0.8rem 0.8rem
                 padding 1rem
                 background #fff
-                z-index 0
 </style>

@@ -5,11 +5,12 @@
             <el-menu-item index="admin">
                 <i class="iconfont icon-shouye icon-font"></i>首页
             </el-menu-item>
-            <el-submenu>
+            <el-submenu index="2">
                 <template slot="title">商品管理</template>
                 <el-menu-item index="createProduct">创建商品</el-menu-item>
             </el-submenu>
         </el-menu>
+
     </div>
 </template>
 
@@ -18,7 +19,6 @@
         name: 'sidebarItem',
         data() {
             return {
-                sidebarData: this.$router.options.routes[1].children,
                 activeIndex: 'admin',
                 rout: true,
                 columnData: []
