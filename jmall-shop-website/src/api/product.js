@@ -14,6 +14,14 @@ export function queryBrands() {
     })
 }
 
+export function createProduct(data) {
+    return request({
+        url: 'api/product/create',
+        data: data,
+        method: 'post'
+    })
+}
+
 export function queryAttributeByCategoryId(categoryId) {
     return request({
         url: 'api/product/category/' + categoryId + '/attribute',

@@ -38,28 +38,8 @@
         },
         methods: {
             submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        loginFormByName(this.form).then(res => {
-                            console.log(res);
-                            if (res.code === 200) {
-                                let token = res.token;
-                                setToken('my-cookies', token);
-                                this.$store.commit('SET_TOKEN', token);
-                                Message({
-                                    type: 'success',
-                                    duration: 1000,
-                                    message: '登录成功'
-                                });
-                                this.$router.push({
-                                    path: '/admin'
-                                });
-                            }
-                        });
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
+                this.$router.push({
+                    path: '/admin'
                 });
             }
         },

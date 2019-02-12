@@ -55,7 +55,7 @@
                                 v-for="tag in saleAttributeValues[index]"
                                 closable
                                 :disable-transitions="false"
-                                @close="handleClose(tag,saleAttributeValues[index])">
+                                @close="handleClose(tag,saleAttributeValues[index],index)">
                                 {{tag}}
                             </el-tag>
                             <el-input
@@ -116,35 +116,51 @@
                 inputVisibles: [],
                 inputValue: '',
                 tableWidth: 1000,
-
                 tableData: [],
-
-                columns: []
+                columns: [],
+                saleAttributeCodeIdMap: {}
             }
         },
         methods: {
             submitForm(formName) {
-                console.log(this.form)
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        alert('submit!');
-                    } else {
-                        console.log('error submit!!');
-                        return false;
+                this.form.skus = [];
+                for(let i = 0;i<this.tableData.length;i++){
+                    let sku = {};
+                    let attributes = [];
+                    sku.price = this.tableData[i].price;
+                    for(let key in this.tableData[i]){
+                        if(key != 'price'){
+                            let attr = {};
+                            attr.attributeValue = this.tableData[i][key];
+                            attr.attributeId = this.saleAttributeCodeIdMap[key];
+                            attributes.push(attr)
+                        }
                     }
+                    sku.saleAttributes = attributes;
+                    this.form.skus.push(sku);
+                }
+                console.log(this.form)
+
+
+                this.$alls.product.createProduct(this.form).then(res => {
+                    Message({
+                        type: 'success',
+                        duration: 5 * 1000,
+                        message: 'success'
+                    });
                 });
             },
             changeAttribute(categoryId) {
                 this.$alls.product.queryAttributeByCategoryId(categoryId).then(res => {
                     this.attributes = res.data;
                     this.form.attributes = [{
-                        id: '',
+                        attributeId: '',
                         attributeValue: ''
                     }];
 
                     for (let i = 0; i < res.data.length; i++) {
                         this.form.attributes[i] = {
-                            id: res.data[i].id,
+                            attributeId: res.data[i].id,
                             attributeValue: ''
                         }
 
@@ -161,7 +177,7 @@
                         this.tableWidth = 1000 + 2;
                         width = 1000 / res.data.length;
                     }else{
-                        this.tableWidth = width * length + 2;
+                        this.tableWidth = width * length;
                     }
 
                     let i = 0
@@ -170,6 +186,7 @@
                         this.saleAttributeCodes[i] = res.data[i].attributeCode;
                         this.inputVisibles[i] = false;
                         this.columns[i] = {field: res.data[i].attributeCode, title:res.data[i].attributeName, width: width, titleAlign: 'center',columnAlign:'center'};
+                        this.saleAttributeCodeIdMap[res.data[i].attributeCode] = res.data[i].id;
                     }
                     this.columns[i] = {field: 'price', title:"价格", width: width, titleAlign: 'center',columnAlign:'center',isEdit:true};
 
@@ -179,8 +196,10 @@
 
             },
 
-            handleClose(tag,tags) {
+            handleClose(tag,tags,index) {
                 tags.splice(tags.indexOf(tag), 1);
+                this.$set(this.saleAttributeValues,index,tags);
+                this.buildTable();
             },
 
             showInput(index) {
@@ -202,14 +221,16 @@
                 this.inputVisibles[index] = false;
                 this.inputValue = '';
 
-
+                this.buildTable();
+            },
+            buildTable(){
                 let rowNum = 1;
                 for(let i= 0;i<this.saleAttributeValues.length;i++){
-                   if(this.saleAttributeValues[i].length == 0){
-                       this.tableData = [];
-                       return;
-                   }
-                   rowNum *= this.saleAttributeValues[i].length;
+                    if(this.saleAttributeValues[i].length == 0){
+                        this.tableData = [];
+                        return;
+                    }
+                    rowNum *= this.saleAttributeValues[i].length;
                 }
 
                 let datas = [];
@@ -240,17 +261,35 @@
 
                 }
 
-                for(let x = 0;x<datas.length;x++){
-                    this.form.skus[x] = {
-                        attributes:datas[x]
+                let oldData = this.tableData;
+
+                let oldDataMap = {};
+                for(let i = 0;i< oldData.length ;i++ ){
+                    let oldDatum = oldData[i];
+                    let price = oldDatum['price'];
+                    delete oldDatum['price'];
+                    oldDataMap[JSON.stringify(oldDatum)] = price
+                }
+
+                for(let i = 0 ; i<datas.length;i++){
+                    let price = oldDataMap[[JSON.stringify(datas[i])]];
+                    if(price != null){
+                        datas[i].price = price;
                     }
                 }
 
                 this.tableData = datas;
-
             },
-
             cellMerge(rowIndex,rowData,field){
+                if(field == 'price'){
+                    return {
+                        colSpan: 1,
+                        rowSpan: 1,
+                        content: rowData[field],
+                        componentName: ''
+                    }
+                }
+
                 let rowNum = 1;
 
                 for(let i= 0;i<this.saleAttributeValues.length;i++){
@@ -277,7 +316,6 @@
 
             cellEditDone(newValue,oldValue,rowIndex,rowData,field){
                 this.$set(this.tableData[rowIndex],field,newValue);
-                this.form.skus[rowIndex].price = newValue;
             }
         },
         mounted() {
