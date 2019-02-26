@@ -320,10 +320,10 @@
         },
         mounted() {
             this.$alls.product.queryCategories().then(res => {
-                this.categories = res.data;
+                this.categories = res;
             });
             this.$alls.product.queryBrands().then(res => {
-                this.brands = res.data;
+                this.brands = res;
             });
         }
     }
