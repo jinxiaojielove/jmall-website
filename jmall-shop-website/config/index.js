@@ -14,9 +14,9 @@ module.exports = {
             '/api': {
                 target: 'http://localhost:80/', //目标api接口
                 changeOrigin: true,		  // 是否允许跨域
-                pathRewrite: {			  // rewrite 重写
-                    '^/api': ''
-                }
+                // pathRewrite: {			  // rewrite 重写
+                //     '^/api': ''
+                // }
             }
 
         },
